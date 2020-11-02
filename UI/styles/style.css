@@ -1,0 +1,41 @@
+.navbar {
+    min-height: 80px;
+}
+
+.navbar-brand {
+    padding: 0 15px;
+    height: 80px;
+    line-height: 80px;
+}
+
+.nav-link {
+    font-size: xx-large;
+}
+
+button.shoppingcart {
+    font-size: xx-large;
+}
+
+.btn-outline-success {
+    color: #FFAC33;
+    border-color: #FFAC33;
+    font-size: xx-large;
+}
+
+.btn-outline-success:hover {
+    color: #fff;
+    background-color: #FFAC33;
+    border-color: #FFAC33;
+    font-size: xx-large;
+}
+
+.dropdown-item {
+    font-size: xx-large;
+    width: 100%;
+}
+
+#cheeseoptions {
+    background-color: #E7E9EC;
+    text-align: center;
+}
+
