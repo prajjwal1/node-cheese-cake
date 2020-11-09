@@ -1,0 +1,20 @@
+.nav-link {
+    color: white !important;
+}
+
+.btn-outline-success {
+    color: #FFAC33;
+    border-color: #FFAC33;
+}
+
+.btn-outline-success:hover {
+    color: #fff;
+    background-color: #FFAC33;
+    border-color: #FFAC33;
+    font-size: xx-large;
+}
+
+.dropdown-item {
+    width: 100%;
+}
+
