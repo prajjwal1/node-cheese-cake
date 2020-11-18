@@ -13,7 +13,11 @@
                     Welcome, Guest!  &nbsp;<i class="fas fa-user"></i>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="signin">Sign In</a>
+                    <a class="dropdown-item" href="/auth/register">Register</a>
+                    <a class="dropdown-item" href="/auth/login">Log in</a>
+                    {{#loggedIn}}
+                        <a class="dropdown-item" href="/auth/logout">Log out</a>
+                    {{/loggedIn}}
                 </div>
             </li>
         </ul>
