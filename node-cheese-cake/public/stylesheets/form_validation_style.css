@@ -11,7 +11,12 @@
     color: #fff;
     background-color: #FFAC33;
     border-color: #FFAC33;
-    font-size: xx-large;
+}
+
+.btn-outline-success:not(:disabled):not(.disabled).active, .btn-outline-success:not(:disabled):not(.disabled):active, .show>.btn-outline-success.dropdown-toggle {
+    color: #fff;
+    background-color: #FFAC33;
+    border-color: #FFAC33;
 }
 
 .dropdown-item {

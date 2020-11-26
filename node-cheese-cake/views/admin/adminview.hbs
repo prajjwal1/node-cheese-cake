@@ -1,0 +1,36 @@
+<div class="text-center">
+    <img src="./images/cheeseshoplogo.png" class="rounded" alt="Cheese Shop Logo">
+    <h3>Welcome to The Cheese Shop! We sell high-quality cheese products.
+        <br>
+        <small class="text-muted">We are excited for you to shop with us.</small>
+    </h3>
+</div>
+<div id = "cheeseoptions" class = "text-center">
+	<br>
+	<a class="btn btn-outline-success my-2 my-sm-0" href="/products/new" role="button">Add New Product</a>
+	<br>
+	<hr>
+  	{{#each products}}
+	  	<div class="text-center">
+			<h4>{{this.title}}</h4>
+			<div>
+				<a href = "products/{{this._id}}">
+					<img src="images/{{this.image}}" style="width:200px; height:200px;" class="img-thumbnail"/> 
+				</a>
+				<p>{{this.description}}</p>
+			</div>
+			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add to Cart</button>
+			<br>
+			<br>
+			<form id="delete" action="/products/{{this._id}}?_method=DELETE" method="POST">
+    			<button class="btn btn-danger" type="submit">Delete Product</button>
+			</form>
+			<br>
+			<br>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Edit Product</button>
+			<br>
+			<hr>
+			<br>
+		</div>
+  	{{/each}}
+</div>
