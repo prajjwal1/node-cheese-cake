@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="container signin-parent">
+            <h1>Sign In to Account</h1>
+            {{# if hasErrors}}
+                <div class="alert alert-danger">
+                    {{# each messages}}
+                        <p>{{this}}</p>
+                    {{/each}}
+                </div>
+            {{/if}}
+            <form class="signup" action="/user/signin" id="registration" method="POST">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+</div>

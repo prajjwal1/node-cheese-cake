@@ -1,0 +1,21 @@
+{{# each products}}
+    <div class="row card-row">
+        {{# each this }}
+            <div class="col-sm-6 col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-image">
+                        <img src="{{ this.imagePath }}" class="card-img-top" alt="CheeseImage"/> <!--./images/cheesenavbar.png-->
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Cheese Type 1</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <div class="clearfix">
+                            <div class="card-price float-left">2$</div>
+                            <a href="#" class="btn btn-warning float-right" role="button">Add to cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+{{/each}}
