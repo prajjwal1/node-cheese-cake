@@ -1,22 +1,35 @@
 <nav class="navbar navbar-expand-lg navbar-light header-backspace-color">
     <a class="navbar-brand" href="/">
-        <img src="./images/cheesenavbar.png" width="60" height="60" alt="" loading="lazy">
+        <img src="../images/cheesenavbar.png" width="60" height="60" alt="" loading="lazy">
     </a>
 
     <div class="navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Shop <span class="sr-only">(current)</span></a>
+                <a class="nav-link" h ref="/">Shop <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Welcome, Guest!  &nbsp;<i class="fas fa-user"></i>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="signin">Sign In</a>
+                    {{# if login}}
+                        <a href="/user/profile"><i class="fas fa-user-circle"></i> User Account</a>
+                    {{/if}}
+<!--                    <a class="dropdown-item" href="/user/signup">Sign Up</a>-->
+<!--                    <a class="dropdown-item" href="/user/signin">Sign in</a>-->
                 </div>
             </li>
         </ul>
     </div>
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-shopping-cart"></i>  Shopping Cart</button>
+    {{# if login}}
+        <li role="separator" class="split-pane-divider"></li>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><a class="user-buttons" href="/user/logout"><i class="fas fa-sign-out-alt"></i>  LogOut </a></button>
+    {{else}}
+        <li role="separator" class="split-pane-divider"></li>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><a class="user-buttons" href="/user/signup"><i class="fas fa-user-plus"></i>  SignUp </a></button>
+        <li role="separator" class="split-pane-divider"></li>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><a class="user-buttons" href="/user/signin"><i class="fas fa-sign-in-alt"></i>  LogIn </a></button>
+    {{/if}}
 </nav>

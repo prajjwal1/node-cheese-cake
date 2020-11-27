@@ -3,27 +3,51 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var expressHbs = require('express-handlebars')
+var expressHbs = require('express-handlebars');
+var mongoose = require('mongoose');
+var session = require('express-session');
+var passport = require('passport');
+var flash = require('connect-flash');
+var validator = require('express-validator');
 
 var indexRouter = require('./routes/index');
-var signinRouter = require('./routes/signin');
+var userRoutes = require('./routes/user');
+var signupRouter = require('./routes/signup');
+var cheeseRouter = require('./routes/cheese');
+// var signInRouter = require('./routes/signin');
+
 
 var app = express();
 
+mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
+require('./config/passport');
+
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'hbs');
 app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(validator());
 app.use(cookieParser());
+app.use(session({secret: 'mysupersecret', resave: false, saveUninitialized: false}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function (req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  next();
+})
+
+app.use('/signup', signupRouter);
+app.use('/cheese', cheeseRouter);
+app.use('/user', userRoutes);
 app.use('/', indexRouter);
-app.use('/signin', signinRouter);
+
+// app.use('/signin', signInRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
