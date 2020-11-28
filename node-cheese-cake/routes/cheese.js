@@ -4,6 +4,7 @@ var Product = require('../models/product')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+    var successMsg = req.flash('success')[0];
     Product.find(function(err, docs){
         var productChunks = [];
         var chunkSize = 3;
@@ -12,7 +13,7 @@ router.get('/', function(req, res, next) {
             docs.slice(i, i + chunkSize).forEach(row => tempArray.push(row.toObject()))
             productChunks.push(tempArray);
         }
-        res.render('shop/cheese', { title: 'Cheese Shop', products: productChunks });
+        res.render('shop/cheese', { title: 'Cheese Shop', products: productChunks, successMsg: successMsg, noMessages: !successMsg });
     });
 });
 
