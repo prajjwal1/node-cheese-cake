@@ -17,6 +17,7 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, function (req, email, password, done) {
+    req.checkBody('name', 'Name field cannot be empty.').notEmpty()
     req.checkBody('email', 'Invalid email').notEmpty().isEmail();
     req.checkBody('password', 'Invalid password').notEmpty().isLength({min:6});
     var errors = req.validationErrors();
@@ -35,6 +36,7 @@ passport.use('local.signup', new LocalStrategy({
             return done(null, false, {message: 'Email is already in use.'});
         }
         var newUser = new User();
+        newUser.name = req.body.name
         newUser.email = email;
         newUser.password = newUser.encryptPassword(password);
         newUser.save(function (err, result) {

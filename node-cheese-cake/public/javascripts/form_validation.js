@@ -1,8 +1,7 @@
 $(document).ready(function(){
   $('#registration').validate({
     rules: {
-      firstname: "required",
-      username: "required",
+      name: "required",
       email: {
         required: true,
         email: true
@@ -13,8 +12,7 @@ $(document).ready(function(){
       }
     },
     messages: {
-      firstname: "Please enter your firstname",
-      lastname: "Please enter your lastname",
+      name: "Please enter your firstname",
       password: {
         required: "Please provide a password",
         minlength: "Your password must be at least 5 characters long"

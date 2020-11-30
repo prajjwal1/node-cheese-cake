@@ -24,6 +24,7 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
 
 router.get('/logout', isLoggedIn, function (req,res,next) {
     req.logout();
+    req.session.name = "Guest";
     res.redirect('/');
 });
 
@@ -40,6 +41,7 @@ router.post('/signup', passport.authenticate('local.signup', {
     failureRedirect: '/user/signup',
     failureFlash: true
 }), function (req, res, next) {
+    req.session.name = req.body.name;
     if (req.session.oldUrl) {
         var url = req.session.oldUrl;
         req.session.oldUrl = null;
@@ -60,6 +62,7 @@ router.post('/signin', passport.authenticate('local-signin', {
     failureRedirect: '/user/signin',
     failureFlash: true
 }), function (req, res, next) {
+    req.session.name = req.user.name;
     if (req.session.oldUrl) {
         var url = req.session.oldUrl;
         req.session.oldUrl = null;

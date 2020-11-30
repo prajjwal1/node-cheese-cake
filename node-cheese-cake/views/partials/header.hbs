@@ -10,7 +10,7 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Welcome, Guest!  &nbsp;<i class="fas fa-user"></i>
+                    Welcome, {{ session.name }}  &nbsp;<i class="fas fa-user"></i>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     {{# if login}}
