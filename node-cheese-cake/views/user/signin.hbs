@@ -9,7 +9,7 @@
                     {{/each}}
                 </div>
             {{/if}}
-            <form class="signup" action="/user/signin" id="registration" method="POST">
+            <form class="signup log-user" action="/user/signin" id="registration" method="POST">
                 <div class="form-group">
                     <label for="email" class="form-label">Email address</label>
                     <input type="email" class="form-control" name="email" id="email">
@@ -19,7 +19,7 @@
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <button type="submit" class="btn btn-primary">Sign In</button>
+                <button type="submit" class="btn-primary">Sign In</button>
             </form>
             <p>Don't have an account? <a href="/user/signup">Sign Up Instead!</a></p>
         </div>

@@ -9,7 +9,7 @@
                     {{/each}}
                 </div>
             {{/if}}
-            <form class="signup" action="/user/signup" id="registration" method="POST">
+            <form class="signup log-user" action="/user/signup" id="registration" method="POST">
                 <div class="form-group">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" name="name" id="name">
@@ -23,7 +23,7 @@
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <button type="submit" class="btn-primary">Sign Up</button>
             </form>
         </div>
     </div>
