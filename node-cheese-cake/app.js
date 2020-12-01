@@ -24,7 +24,7 @@ mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true
 require('./config/passport');
 
 // view engine setup
-app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
+app.engine('.hbs',expressHbs({ defaultLayout: 'layout', extname: '.hbs', helpers: require('./config/handlebars-helpers') }));
 app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
@@ -47,6 +47,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
   res.locals.login = req.isAuthenticated();
   res.locals.session = req.session;
+  res.locals.totalProducts = 0;
+  res.locals.totalPages = 0;
+  res.locals.limit = 6;
+  res.locals.currentPage = 1;
   next();
 })
 
