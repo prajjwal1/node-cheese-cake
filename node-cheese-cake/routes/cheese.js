@@ -52,42 +52,27 @@ router.get('/', pages, function (req, res, next) {
         category = req.query.searchByCategory;
         searchedFlag = true;
         var query;
-        if (name != "" && category == "") {
+        console.log("1");
+        if (name != "") {
+            console.log("20");
             query = Product.find({
-                title: {$regex: name, $options: "i"},
-                isDeleted: false
+                title: {$regex: name, $options: "i"}//, isDeleted: false
             }).limit(limit).skip(offset).lean();
             Product.count({title: {$regex: name, $options: "i"}}, function (err, count) {
                 res.locals.totalProducts = count;
                 res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
             });
-        } else if (name == "" && category != "") {
-            query = Product.find({category: category, isDeleted: false}).limit(limit).skip(offset).lean();
-            Product.count({category: category}, function (err, count) {
-                res.locals.totalProducts = count;
-                res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
-                console.log(res.locals.totalPages);
-            });
-        } else if (name != "" && category != "") {
-            query = Product.find({
-                category: category,
-                isDeleted: false,
-                title: {$regex: name, $options: "i"}
-            }).limit(limit).skip(offset).lean();
-            Product.count({category: category, title: {$regex: name, $options: "i"}}, function (err, count) {
-                res.locals.totalProducts = count;
-                res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
-            });
         } else {
+            console.log("21");
             query = Product.find({isDeleted: false}).limit(limit).skip(offset).lean();
             //default values are fine here.
         }
     }
-
+    console.log("3");
 
     query.exec((error, docs) => {
+        console.log("4");
         if (error) return console.error(error);
-
         var productChunks = [];
         var chunkSize = 3;
         for (var i = 0; i < docs.length; i += chunkSize) {
@@ -116,14 +101,14 @@ router.get('/:page', pages, function (req, res, next) {
         if (Object.keys(req.query).length === 0) {
             res.redirect('/cheese');
         } else {
-            res.redirect('/?searchByName=' + req.query.searchByName + '&searchByCategory=' + req.query.searchByCategory);
+            res.redirect('/cheese/?searchByName=' + req.query.searchByName + '&searchByCategory=' + req.query.searchByCategory);
         }
     } else {
         var isAdmin = false;
         if (typeof (req.user) !== 'undefined') {
             isAdmin = req.user.isAdmin;
         }
-        console.log(isAdmin);
+        // console.log(isAdmin);
         var successMsg = req.flash('success')[0];
         var currentPage = req.params.page;
         res.locals.currentPage = currentPage;
@@ -154,7 +139,7 @@ router.get('/:page', pages, function (req, res, next) {
                 Product.count({category: category}, function (err, count) {
                     res.locals.totalProducts = count;
                     res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
-                    console.log(res.locals.totalPages);
+                    // console.log(res.locals.totalPages);
                 });
             } else if (name != "" && category != "") {
                 query = Product.find({
