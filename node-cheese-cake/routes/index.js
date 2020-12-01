@@ -20,7 +20,6 @@ router.get('/add-to-cart/:id', function (req,res,next) {
     }
     cart.add(product, productId);
     req.session.cart = cart;
-    console.log(req.session.cart);
     res.redirect('/cheese');
   });
 });
