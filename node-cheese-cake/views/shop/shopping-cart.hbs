@@ -1,3 +1,10 @@
+<div class="row">
+    <div class="col-sm-8 col-md-10 offset-md-1 offset-sm-2">
+        <div id="error" class="alert alert-danger" {{#if noMsg}} hidden {{/if}}>
+            {{ errorMsg }}
+        </div>
+    </div>
+</div>
 {{# if products}}
     <div class="row card-row">
         <div class="col-sm-6 col-md-7 col-md-offset-3 col-sm-offset-3">
@@ -9,7 +16,7 @@
                                 <strong>{{ this.item.title }}</strong>
                             </div>
                             <div class="col-md-3">
-                                <span class="label label-success">{{this.price}}</span>
+                                <span class="label label-success">${{this.price}}</span>
                             </div>
                             <div class="col-md-3">
                                 <span class="badge">{{ this.qty }}</span>
@@ -32,7 +39,7 @@
 
     <div class="row">
         <div class="col-sm-6 col-md-5 col-md-offset-3 col-sm-offset-3">
-            <strong>Total: {{this.totalPrice}}</strong>
+            <strong>Total: ${{this.totalPrice}}</strong>
         </div>
     </div>
 
