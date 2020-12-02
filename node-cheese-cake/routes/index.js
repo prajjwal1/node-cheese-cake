@@ -43,11 +43,24 @@ router.get('/remove/:id', function(req, res, next) {
 });
 
 router.get('/shopping-cart', function (req,res,next) {
+  var errorMsg = req.flash('error')[0];
   if (!req.session.cart) {
-    return res.render('shop/shopping-cart', {products: null});
+    return res.render('shop/shopping-cart', {
+      products: null,
+      errorMsg: errorMsg,
+      noMsg: !errorMsg
+    });
   }
   var cart = new Cart(req.session.cart);
-  res.render('shop/shopping-cart', {products: cart.generateArray(), totalPrice: cart.totalPrice});
+  var errorMsg = req.flash('error')[0];
+  console.log("here");
+  console.log(errorMsg);
+  res.render('shop/shopping-cart', {
+    products: cart.generateArray(),
+    totalPrice: cart.totalPrice,
+    errorMsg: errorMsg,
+    noMsg: !errorMsg
+  });
 });
 
 router.get('/checkout', isLoggedIn, function (req,res,next) {
@@ -63,18 +76,51 @@ router.post('/checkout', isLoggedIn, function (req,res,next) {
     return res.redirect('shop/shopping-cart');
   }
   var cart = new Cart(req.session.cart);
+  var current_date = new Date();
   var order = new Order({
     user: req.user,
     cart: cart,
     address: req.body.address,
-    name: req.body.name
-    // paymentId: 'something from payment portal'
+    name: req.body.name,
+    order_date: current_date
   });
-  order.save(function (err, result){
-    req.session.cart = null;
-    req.flash('success', 'Successfully bought product!');
-    res.redirect('/cheese');
-  });
+
+  var storedItems = cart.items;
+  for (var items in storedItems) {
+    var productId = storedItems[items].item._id;
+    var stock = storedItems[items].item.stock;
+    var productQty = storedItems[items].qty;
+    var flashMsgFlag = false;
+    var errorMessages = "";
+    if (stock - productQty < 0) {
+      flashMsgFlag = true;
+      errorMessages += 'We cannot place the order since we only have ' + stock + ' pieces of ' + storedItems[items].item.title + ' left.';
+    }
+  }
+  console.log(flashMsgFlag);
+  if (flashMsgFlag) {
+    req.flash('error', errorMessages);
+    return res.redirect('/shopping-cart');
+  }
+
+  for (var items in storedItems) {
+    var productId = storedItems[items].item._id;
+    var stock = storedItems[items].item.stock;
+    var productQty = storedItems[items].qty;
+    stock = stock - productQty;
+
+    Product.findOneAndUpdate(
+        {_id: productId},
+        {stock: stock}, function (err, result) {
+          console.log("Successfully updated");
+        }
+    );
+    order.save(function (err, result) {
+      req.flash('success', 'Successfully bought products!');
+      req.session.cart = null;
+      res.redirect('/cheese');
+    });
+  }
 });
 
 module.exports = router;
