@@ -48,7 +48,7 @@ router.post('/signup', passport.authenticate('local.signup', {
         res.redirect(url);
 
     } else {
-        res.redirect('/user/profile');
+        res.redirect('/cheese');
     }
 });
 
@@ -68,7 +68,7 @@ router.post('/signin', passport.authenticate('local-signin', {
         req.session.oldUrl = null;
         res.redirect(url);
     } else {
-        res.redirect('/user/profile');
+        res.redirect('/cheese');
     }
 });
 
