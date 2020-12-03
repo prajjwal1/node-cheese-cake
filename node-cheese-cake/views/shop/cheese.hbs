@@ -16,29 +16,36 @@
                 {{deletedItemMsg}}
                 {{editItemMsg}}
             </div>
-        </div>
+    </div>
 
-        {{# each products}}
-            <div class="row card-row">
-                {{# each this }}
-                    <div class="col-sm-6 col-md-4">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-image">
-                                <img src="{{ this.imagePath }}" class="card-img-top" alt="CheeseImage"/> <!--./images/cheesenavbar.png-->
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ this.title }}</h5>
-                                <p class="card-text">{{ this.description }}</p>
-                                <div class="clearfix">
-                                    <div class="card-price float-left">{{ this.price }}</div>
-                                    <a href="/add-to-cart/{{ this._id }}" class="btn btn-warning float-right" role="button">Add to cart</a>
-                                </div>
+    {{#if isAdmin}}
+        <a href = "shop/admin-list" class="btn btn-primary" role="button">List All Items</a>
+        <a href = "shop/admin-add" role="button" class="btn btn-primary">Add Items</a>
+        <a href = "shop/admin-delete" role="button" class="btn btn-primary">Delete item</a>
+        <a href = "shop/admin-update" role="button" class="btn btn-primary">Update an item</a>
+    {{/if}}
+
+    {{# each products}}
+        <div class="row card-row">
+            {{# each this }}
+                <div class="col-sm-6 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-image">
+                            <img src="{{ this.imagePath }}" class="card-img-top" alt="CheeseImage"/> <!--./images/cheesenavbar.png-->
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ this.title }}</h5>
+                            <p class="card-text">{{ this.description }}</p>
+                            <div class="clearfix">
+                                <div class="card-price float-left">{{ this.price }}</div>
+                                <a href="/add-to-cart/{{ this._id }}" class="btn btn-warning float-right" role="button">Add to cart</a>
                             </div>
                         </div>
                     </div>
-                {{/each}}
-            </div>
-        {{/each}}
+                </div>
+            {{/each}}
+        </div>
+    {{/each}}
 
         <div class="row" style="margin-top: 20px;">
             <div aria-label="Page navigation example" class="col-md-2 offset-md-5">

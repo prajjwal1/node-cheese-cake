@@ -2,10 +2,12 @@ var express = require('express');
 var router = express.Router();
 var Cart = require('../models/cart')
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
+
 var Product = require('../models/product')
 var Order = require('../models/order')
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('shop/index', { title: 'Cheese Cake Shop' });
 });
@@ -24,10 +26,75 @@ router.get('/add-to-cart/:id', function (req,res,next) {
   });
 });
 
+router.get('/shop/admin-list', function (req, res, next){
+  var items_map = {};
+  var cnt = 0;
+  Product.find({}, function(err, items){
+    items.forEach(function(item){
+      if (item.title.length>0 && item.isDeleted == false){
+        items_map[cnt] = item;
+        cnt += 1;
+      }
+    })
+  })
+  console.log(items_map);
+  res.render('shop/admin-list', {
+    items: items_map
+  })  
+})
+
+router.get('/shop/admin-delete', function (req, res, next){
+  var items_map = new Array();
+  var cnt = 0;
+  Product.find({}, function(err, items){
+    items.forEach(function(item){
+      if (item.title.length>0 && item.isDeleted == false){
+        items_map[cnt] = item;
+        cnt += 1;
+      }
+    })
+  })
+  res.render('shop/admin-delete', {
+    items: items_map
+  });
+})
+
+router.get('/shop/admin-add', function(req, res, next){
+  res.render('shop/admin-add');
+})
+
+router.post('/cheese', function(req, res, next){
+  data = [
+    {
+      title: req.body.title,
+      stock: req.body.stock,
+      imagePath: req.body.imagePath,
+      title: req.body.title,
+      description: req.body.description,
+      category: req.body.category,
+      price: req.body.price,
+      isDeleted: false
+    }
+  ]
+  Product.insertMany(data, function(err, data){
+    if (err) throw err;
+    res.redirect('cheese');
+  })
+})
+
+router.post('/shop/item-delete/:id', function(req, res, next) {
+  Product.findOneAndUpdate(
+    {_id: req.params.id},
+    {isDeleted: true}, function (err, result) {
+      console.log("Successfully Deleted");
+    }
+);
+    res.render('cheese');
+})
+
 router.get('/reduce/:id', function(req, res, next) {
     var productId = req.params.id;
     var cart = new Cart(req.session.cart ? req.session.cart : {});
-
     cart.reduceByOne(productId);
     req.session.cart = cart;
     res.redirect('/shopping-cart');
