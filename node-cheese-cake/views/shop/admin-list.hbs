@@ -1,28 +1,33 @@
+<br>
 <div class="alert alert-success" role="alert">
-  Displaying all the items in database
+  Displaying Cheese Products in Database:
 </div>
 
-<div class="alert alert-primary" role="alert" name="list">    
-<table class="table table-striped">
-<thread>
-<tr>
-    {{!-- <th scope="col">ID</th> --}}
-    <th scope="col">Title</th>
-    <th scope="col">Stock</th>
-    <th scope="col">Category</th>
-</tr>
-</thread>
- <tbody>
-
-{{# each items}}
-<tr>
-    {{# each this}} 
-        <td>{{this.title}}</td>
-        <td>{{this.stock}}</td>
-        <td>{{title.category}}</td>
-        {{/each}}  
- </tr>     
-{{/each}}
-</tbody>
-</table>
+<div name="list"> 
+  <table class="table table-striped">
+    <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">Category</th>
+          <th scope="col">Price</th>
+          <th scope="col">Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+            {{#each this}}
+              {{#if title}}
+                <tr>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.stock}}</td>  
+                </tr>  
+              {{/if}}   
+            {{/each}}
+        {{/each}}
+    </tbody>
+  </table>
 </div>

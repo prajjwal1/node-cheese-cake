@@ -27,20 +27,20 @@ router.get('/add-to-cart/:id', function (req,res,next) {
 });
 
 router.get('/shop/admin-list', function (req, res, next){
-  var items_map = {};
+  var products = [];
   var cnt = 0;
-  Product.find({}, function(err, items){
-    items.forEach(function(item){
-      if (item.title.length>0 && item.isDeleted == false){
-        items_map[cnt] = item;
-        cnt += 1;
+  Product.find({}, function(err, items) {
+    items.forEach(function(item) {
+      if (item.title.length > 0 && item.isDeleted == false){
+        products[cnt] = item;
+        cnt ++;
       }
     })
+
+    console.log(products);
+    res.render('shop/admin-list', { products : products }) 
   })
-  console.log(items_map);
-  res.render('shop/admin-list', {
-    items: items_map
-  })  
+
 })
 
 router.get('/shop/admin-delete', function (req, res, next){
@@ -63,16 +63,55 @@ router.get('/shop/admin-add', function(req, res, next){
   res.render('shop/admin-add');
 })
 
-router.post('/cheese', function(req, res, next){
+router.get('/shop/admin-update', function(req, res, next){
+  var items_map = new Array();
+  var cnt = 0;
+  Product.find({}, function(err, items){
+    items.forEach(function(item) {
+      if (item.title.length > 0 && item.isDeleted == false) {
+        items_map[cnt] = item;
+        cnt += 1;
+      }
+    })
+  })
+  res.render('shop/admin-update', {
+    items: items_map
+  });
+})
+
+router.post('/cheese', function(req, res, next) {
+  var title = req.body.title;
+  var stock = req.body.stock;
+  var imagePath = req.body.imagePath;
+  var description = req.body.description;
+  var category = req.body.category;
+  var price = req.body.price;
+  if(title == "") {
+    title = "Default Cheese";
+  }
+  if(stock == "") {
+    stock = 10;
+  }
+  if(imagePath == "") {
+    imagePath = "cheesenavbar.png";
+  }
+  if(description == "") {
+    imagePath = "Type of Cheese";
+  }
+  if(category == "") {
+    imagePath = "vegetarian";
+  }
+  if(price == "") {
+    imagePath = 20;
+  }
   data = [
     {
-      title: req.body.title,
-      stock: req.body.stock,
-      imagePath: req.body.imagePath,
-      title: req.body.title,
-      description: req.body.description,
-      category: req.body.category,
-      price: req.body.price,
+      title: title,
+      stock: stock,
+      imagePath: imagePath,
+      description: description,
+      category: category,
+      price: price,
       isDeleted: false
     }
   ]
@@ -86,10 +125,35 @@ router.post('/shop/item-delete/:id', function(req, res, next) {
   Product.findOneAndUpdate(
     {_id: req.params.id},
     {isDeleted: true}, function (err, result) {
-      console.log("Successfully Deleted");
+        console.log("Successfully Deleted");
     }
-);
-    res.render('cheese');
+  );
+  res.redirect('/cheese'); 
+})
+
+router.post('/shop/item-update/:id', function(req, res, next) {
+  Product.findOne({_id: req.params.id}, function(err, item) {
+    res.render('shop/update-product', item); 
+  });
+  
+})
+
+router.post('/shop/item-update-values/:id', function(req, res, next) {
+  Product.findOneAndUpdate (
+    {_id: req.params.id},
+    {
+      title: req.body.title,
+      category: req.body.category,
+      stock: req.body.stock,
+      price: req.body.price,
+      description: req.body.description,
+      imagePath: req.body.imagePath,
+    }, function (err, result) {
+      console.log("Successfully Update");
+    }  
+  );
+
+  res.redirect('/cheese'); 
 })
 
 router.get('/reduce/:id', function(req, res, next) {

@@ -22,14 +22,16 @@
         <a href = "shop/admin-list" class="btn btn-primary" role="button">List All Items</a>
         <a href = "shop/admin-add" role="button" class="btn btn-primary">Add Items</a>
         <a href = "shop/admin-delete" role="button" class="btn btn-primary">Delete item</a>
-        <a href = "shop/admin-update" role="button" class="btn btn-primary">Update an item</a>
+        <a href = "shop/admin-update" role="button" class="btn btn-primary">Update a Product</a>
     {{/if}}
 
     {{# each products}}
         <div class="row card-row">
             {{# each this }}
                 <div class="col-sm-6 col-md-4">
+                    
                     <div class="card" style="width: 18rem;">
+                        
                         <div class="card-image">
                             <img src="{{ this.imagePath }}" class="card-img-top" alt="CheeseImage"/> <!--./images/cheesenavbar.png-->
                         </div>
