@@ -101,15 +101,10 @@ router.get('/shop/admin-update', function(req, res, next){
 })
 
 router.post('/cheese', upload.single('image'), function(req, res, next) {
-  if (!req.file || Object.keys(req.file).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-
+  
   var title = req.body.title;
   var stock = req.body.stock;
-  var imagePath = req.file.path;
-  temp = imagePath.split('/');
-  imagePath = '../'+'images'+'/'+temp[temp.length-1];
+  var imagePath = ""; 
   var description = req.body.description;
   var category = req.body.category;
   var price = req.body.price;
@@ -119,18 +114,30 @@ router.post('/cheese', upload.single('image'), function(req, res, next) {
   if(stock == "") {
     stock = 10;
   }
-  if(imagePath == "") {
-    imagePath = "cheesenavbar.png";
+
+  if (!req.file || Object.keys(req.file).length === 0) {
+    imagePath = "../images/cheesenavbar.png";
+    // return res.status(400).send('No files were uploaded.');
   }
+
+  else {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
+  }
+
   if(description == "") {
     imagePath = "Type of Cheese";
   }
+
   if(category == "") {
     imagePath = "vegetarian";
   }
+
   if(price == "") {
     imagePath = 20;
   }
+
   data = [
     {
       title: title,
@@ -166,21 +173,38 @@ router.post('/shop/item-update/:id', function(req, res, next) {
 })
 
 router.post('/shop/item-update-values/:id', upload.single('image'), function(req, res, next) {
-  var imagePath = req.file.path;
-  temp = imagePath.split('/');
-  imagePath = '../'+'images'+'/'+temp[temp.length-1];
+  
+  var imagePath = "";
+  var query = {};
 
-  Product.findOneAndUpdate (
-    {_id: req.params.id},
-    {
+  if (req.file && Object.keys(req.file).length != 0) {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
+    query = {
       title: req.body.title,
       category: req.body.category,
       stock: req.body.stock,
       price: req.body.price,
       description: req.body.description,
       imagePath: imagePath,
-    }, function (err, result) {
-      console.log("Successfully Update");
+    }
+  }
+  
+  else {
+    query = {
+      title: req.body.title,
+      category: req.body.category,
+      stock: req.body.stock,
+      price: req.body.price,
+      description: req.body.description,
+    }
+  }
+
+  Product.findOneAndUpdate (
+    {_id: req.params.id},
+    query, function (err, result) {
+      console.log("Successfully Updated");
     }  
   );
 
