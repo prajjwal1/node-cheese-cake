@@ -4,9 +4,21 @@ var passport = require('passport');
 var csrf = require('csurf');
 var Order = require('../models/order');
 var Cart = require('../models/cart');
+var User = require('../models/user')
 
 var csrfProtection = csrf();
 router.use(csrfProtection);
+
+router.post('/verification', function (req, res, next) {
+    User.findOne({email: req.body.email}, function (error, result) {
+        if (error) console.log(error);
+        if (result == null) {
+            res.send(false);
+        } else {
+            res.send(true);
+        }
+    })
+});
 
 router.get('/profile', isLoggedIn, function (req, res, next) {
     Order.find({user: req.user}, function(err, orders) {
@@ -55,8 +67,7 @@ router.post('/signup', passport.authenticate('local.signup', {
 router.get('/signin', function (req,res,next) {
     var messages = req.flash('error');
     res.render('user/signin', { title: 'Cheese Shop - Sign In', csrfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0 });
-})
-
+});
 
 router.post('/signin', passport.authenticate('local-signin', {
     failureRedirect: '/user/signin',
