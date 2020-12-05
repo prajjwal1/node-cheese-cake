@@ -2,6 +2,27 @@ var express = require('express');
 var router = express.Router();
 var Cart = require('../models/cart')
 
+////
+const path = require('path');
+const multer  = require('multer');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'public/images/');
+  },
+  filename: (req, file, cb) => {
+      console.log(file);
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});const fileFilter = (req, file, cb) => {
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+      cb(null, true);
+  } else {
+      cb(null, false);
+  }
+}
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+/////
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
 
@@ -79,10 +100,16 @@ router.get('/shop/admin-update', function(req, res, next){
   });
 })
 
-router.post('/cheese', function(req, res, next) {
+router.post('/cheese', upload.single('image'), function(req, res, next) {
+  if (!req.file || Object.keys(req.file).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
   var title = req.body.title;
   var stock = req.body.stock;
-  var imagePath = req.body.imagePath;
+  var imagePath = req.file.path;
+  temp = imagePath.split('/');
+  imagePath = '../'+'images'+'/'+temp[temp.length-1];
   var description = req.body.description;
   var category = req.body.category;
   var price = req.body.price;
@@ -138,7 +165,11 @@ router.post('/shop/item-update/:id', function(req, res, next) {
   
 })
 
-router.post('/shop/item-update-values/:id', function(req, res, next) {
+router.post('/shop/item-update-values/:id', upload.single('image'), function(req, res, next) {
+  var imagePath = req.file.path;
+  temp = imagePath.split('/');
+  imagePath = '../'+'images'+'/'+temp[temp.length-1];
+
   Product.findOneAndUpdate (
     {_id: req.params.id},
     {
@@ -147,7 +178,7 @@ router.post('/shop/item-update-values/:id', function(req, res, next) {
       stock: req.body.stock,
       price: req.body.price,
       description: req.body.description,
-      imagePath: req.body.imagePath,
+      imagePath: imagePath,
     }, function (err, result) {
       console.log("Successfully Update");
     }  

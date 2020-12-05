@@ -1,7 +1,7 @@
 <div class="container">
 <h1>Add Cheese Product</h1>
 
-<form action="/cheese" method="POST">
+<form action="/cheese" method="POST" ref = "uploadForm" id="uploadForm" encType="multipart/form-data">
   <div class="form-group">
 	<input type="text" name="title" class="form-control" placeholder="title" required>
   </div>
@@ -17,8 +17,9 @@
   <div class="form-group">
 	<textarea name="description" class="form-control" placeholder="description" required></textarea>
   </div>
-  <div class="form-group">
-	<textarea name="imagePath" class="form-control" placeholder="imagePath" required></textarea>
+  <div class="form-group" >
+    <input type='submit' value='Upload a picture'/>
+    <input type="file" name="image" />
   </div>
   <div class="form-group">
 	<button type="Submit" class="btn-btn-info">Save</button>
