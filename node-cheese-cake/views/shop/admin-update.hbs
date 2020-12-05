@@ -1,0 +1,17 @@
+<link rel = "stylesheet" href = "stylesheets/main.css">
+<br>
+<div class="alert alert-danger" role="alert">
+  Update an Item in Database
+</div>
+
+{{#each items}}
+<div>
+    {{#each this}}
+    {{#if title}}
+      <form action = "/shop/item-update/{{ this._id }}" method = "POST">
+        <button type="submit" class="btn btn-warning">{{ this.title }}</button>
+      </form>
+    {{/if}}  
+    {{/each}}
+</div>
+{{/each}}

@@ -1,0 +1,34 @@
+<div class="container">
+<h1>Add Cheese Product</h1>
+
+<form method="POST" action="/shop/item-update-values/{{ this._id }}" ref = "uploadForm" id="uploadForm" encType="multipart/form-data">
+  <div class="form-group">
+	<input type="text" name="title" class="form-control" placeholder="title" value = "{{this.title}}" required>
+  </div>
+  <div class="form-group">	
+	<input type="text" name="category" class="form-control" placeholder="category" value = "{{this.category}}" required>
+  </div>
+  <div class="form-group">
+	<input type="number" name="stock" class="form-control" placeholder="Stock" min="0" value = "{{this.stock}}" required>
+  </div>
+  <div class="form-group">
+	<input type="number" name="price" class="form-control" placeholder="Price" min="1" value = "{{this.price}}" required>
+  </div>
+  <div class="form-group">
+	<textarea name="description" class="form-control" placeholder="description" required>{{this.description}}</textarea>
+  </div>
+  {{!-- <div class="form-group">
+	<textarea name="imagePath" class="form-control" placeholder="imagePath" required>{{this.imagePath}}</textarea>
+  </div> --}}
+  <div class="form-group" >
+    <input type='submit' value='Upload a picture'/>
+    <input type="file" name="image" />
+  </div>
+  <div class="form-group">
+	<button type="Submit" class="btn-btn-info">Save</button>
+  </div>
+</form>
+
+<a href = "/">Cancel </a>
+
+</div>

@@ -1,0 +1,17 @@
+<link rel = "stylesheet" href = "stylesheets/main.css">
+<br>
+<div class="alert alert-danger" role="alert">
+  Delete an item in database
+</div>
+
+{{#each items}}
+<div>
+    {{#each this}}
+    {{#if title}}
+      <form method="POST" action="/shop/item-delete/{{ this._id }}">
+        <button type="submit" class="btn btn-danger">{{ this.title }}</button>
+      </form>
+    {{/if}}  
+    {{/each}}
+</div>
+{{/each}}

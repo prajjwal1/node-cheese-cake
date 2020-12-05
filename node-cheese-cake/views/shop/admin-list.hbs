@@ -1,0 +1,33 @@
+<br>
+<div class="alert alert-success" role="alert">
+  Displaying Cheese Products in Database:
+</div>
+
+<div name="list"> 
+  <table class="table table-striped">
+    <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col">Category</th>
+          <th scope="col">Price</th>
+          <th scope="col">Stock</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+            {{#each this}}
+              {{#if title}}
+                <tr>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.stock}}</td>  
+                </tr>  
+              {{/if}}   
+            {{/each}}
+        {{/each}}
+    </tbody>
+  </table>
+</div>
