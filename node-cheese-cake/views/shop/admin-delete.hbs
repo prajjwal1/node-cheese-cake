@@ -8,8 +8,8 @@
 <div>
     {{#each this}}
     {{#if title}}
-      <form method="POST" action="/shop/item-delete/{{ this._id }}">
-        <button type="submit" class="btn btn-danger">{{ this.title }}</button>
+      <form method="POST" action="/shop/item-delete/{{ this._id }}" style = "text-align: center;">
+        <button type="submit" class="product-edit btn btn-danger" style = "width: 400px;">{{ this.title }}</button>
       </form>
     {{/if}}  
     {{/each}}

@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var Cart = require('../models/cart')
-
-////
 const path = require('path');
 const multer  = require('multer');
 const storage = multer.diskStorage({
@@ -13,7 +11,9 @@ const storage = multer.diskStorage({
       console.log(file);
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
-});const fileFilter = (req, file, cb) => {
+});
+
+const fileFilter = (req, file, cb) => {
   if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
       cb(null, true);
   } else {
@@ -21,13 +21,13 @@ const storage = multer.diskStorage({
   }
 }
 const upload = multer({ storage: storage, fileFilter: fileFilter });
-/////
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
 
 var Product = require('../models/product')
-var Order = require('../models/order')
+var Order = require('../models/order');
+const { Console } = require('console');
 
 router.get('/', function(req, res, next) {
   res.render('shop/index', { title: 'Cheese Cake Shop' });
@@ -101,15 +101,10 @@ router.get('/shop/admin-update', function(req, res, next){
 })
 
 router.post('/cheese', upload.single('image'), function(req, res, next) {
-  if (!req.file || Object.keys(req.file).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
 
   var title = req.body.title;
   var stock = req.body.stock;
-  var imagePath = req.file.path;
-  temp = imagePath.split('/');
-  imagePath = '../'+'images'+'/'+temp[temp.length-1];
+  var imagePath = '../images/'+ path.basename(req.file.path);
   var description = req.body.description;
   var category = req.body.category;
   var price = req.body.price;
@@ -119,17 +114,25 @@ router.post('/cheese', upload.single('image'), function(req, res, next) {
   if(stock == "") {
     stock = 10;
   }
-  if(imagePath == "") {
-    imagePath = "cheesenavbar.png";
+
+  if (!req.file || Object.keys(req.file).length === 0) {
+    imagePath = "../images/cheesenavbar.png";
+    // return res.status(400).send('No files were uploaded.');
   }
-  if(description == "") {
-    imagePath = "Type of Cheese";
+  else {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
   }
-  if(category == "") {
-    imagePath = "vegetarian";
+
+  if(description === "") {
+    description = "Type of Cheese";
   }
-  if(price == "") {
-    imagePath = 20;
+  if(category === "") {
+    category = "vegetarian";
+  }
+  if(price === "") {
+    price = 20;
   }
   data = [
     {
@@ -166,26 +169,62 @@ router.post('/shop/item-update/:id', function(req, res, next) {
 })
 
 router.post('/shop/item-update-values/:id', upload.single('image'), function(req, res, next) {
-  var imagePath = req.file.path;
-  temp = imagePath.split('/');
-  imagePath = '../'+'images'+'/'+temp[temp.length-1];
 
-  Product.findOneAndUpdate (
-    {_id: req.params.id},
-    {
+  var imagePath = "";
+  var query = {};
+
+  if (req.file && Object.keys(req.file).length != 0) {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
+    query = {
       title: req.body.title,
       category: req.body.category,
       stock: req.body.stock,
       price: req.body.price,
       description: req.body.description,
       imagePath: imagePath,
-    }, function (err, result) {
-      console.log("Successfully Update");
+    }
+  }
+
+  else {
+    query = {
+      title: req.body.title,
+      category: req.body.category,
+      stock: req.body.stock,
+      price: req.body.price,
+      description: req.body.description,
+    }
+  }
+
+  Product.findOneAndUpdate (
+    {_id: req.params.id},
+    query, function (err, result) {
+      console.log("Successfully Updated");
     }  
   );
 
   res.redirect('/cheese'); 
 })
+
+router.get('/increase/:id', function(req, res, next) {
+  var productId = req.params.id;
+  Product.findOne({_id: productId}, function(err, item) {
+    var stock = item.stock;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    var updated = cart.increaseByOne(productId, stock);
+    console.log("stock: " + stock);
+    console.log("updated: " + updated);
+    if(updated == true) {
+      req.session.cart = cart;
+      res.redirect('/shopping-cart');
+    }
+    else {
+      res.redirect('/shopping-cart');
+    }
+  });
+
+});
 
 router.get('/reduce/:id', function(req, res, next) {
     var productId = req.params.id;
@@ -274,15 +313,15 @@ router.post('/checkout', isLoggedIn, function (req,res,next) {
     Product.findOneAndUpdate(
         {_id: productId},
         {stock: stock}, function (err, result) {
-          console.log("Successfully updated");
+          console.log("Successfully updated quantity.");
         }
     );
-    order.save(function (err, result) {
-      req.flash('success', 'Successfully bought products!');
-      req.session.cart = null;
-      res.redirect('/cheese');
-    });
   }
+  order.save(function (err, result) {
+    req.flash('success', 'Successfully bought products!');
+    req.session.cart = null;
+    res.redirect('/cheese');
+  });
 });
 
 module.exports = router;
