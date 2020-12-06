@@ -38,7 +38,44 @@ var products = [
         price: 60,
         stock: 10,
         isDeleted: false
+    }),
+    new Product({
+        imagePath: '../images/Sliced Cheddar.jpeg',
+        title: 'Sliced Cheddar',
+        description: 'Sliced Cheddar',
+        category: "Slices",
+        price: 60,
+        stock: 10,
+        isDeleted: false
+    }),
+    new Product({
+        imagePath: '../images/cheddar.jpeg',
+        title: 'Cheddar',
+        description: 'Cheddar',
+        category: "Small Cubes",
+        price: 60,
+        stock: 10,
+        isDeleted: false
+    }),
+    new Product({
+        imagePath: '../images/WhippingCreamCheese.jpeg',
+        title: 'Whipping Cream Cheese',
+        description: 'Whipping Cream Cheese',
+        category: "Creamy",
+        price: 60,
+        stock: 10,
+        isDeleted: false
+    }),
+    new Product({
+        imagePath: '../images/MexicanMildCheese.jpeg',
+        title: 'Mexican Mild Cheese.',
+        description: 'Mexican Mild Cheese.',
+        category: "Small Cubes",
+        price: 60,
+        stock: 10,
+        isDeleted: false
     })
+
 ];
 
 var done = 0;
