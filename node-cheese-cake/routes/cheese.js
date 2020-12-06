@@ -53,23 +53,43 @@ router.get('/', pages, function (req, res, next) {
         searchedFlag = true;
         var query;
         console.log("1");
-        if (name != "") {
-            console.log("20");
+        if (name !== "" && category === "") {
+            console.log("Request received to get cheese with following options:")
+            console.log("Name: " + name);
             query = Product.find({
-                title: {$regex: name, $options: "i"}//, isDeleted: false
+                title: {$regex: name, $options: "i"},
+                isDeleted: false
             }).limit(limit).skip(offset).lean();
             Product.count({title: {$regex: name, $options: "i"}}, function (err, count) {
                 res.locals.totalProducts = count;
                 res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
             });
+        } else if(name === "" && category !== "") {
+            console.log("Request received to get cheese with following options:")
+            console.log("Category: " + category);
+            query = Product.find({category: category, isDeleted: false}).limit(limit).skip(offset).lean();
+            Product.count({category: category}, function (err, count) {
+                res.locals.totalProducts = count;
+                res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
+                console.log(res.locals.totalPages);
+            });
+        } else if(name !== "" && category !== "") {
+            console.log("Request received to get cheese with following options:")
+            console.log("Name: " + name + " and Category " + category);
+            query = Product.find({
+                category: category,
+                isDeleted: false,
+                title: {$regex: name, $options: "i"}
+            }).limit(limit).skip(offset).lean();
+            Product.count({category: category, title: {$regex: name, $options: "i"}}, function (err, count) {
+                res.locals.totalProducts = count;
+                res.locals.totalPages = Math.ceil(res.locals.totalProducts / res.locals.limit);
+            });
         } else {
-            console.log("21");
             query = Product.find({isDeleted: false}).limit(limit).skip(offset).lean();
-            //default values are fine here.
         }
     }
-    console.log("3");
-
+    console.log("Executing query to fetch products.")
     query.exec((error, docs) => {
         console.log("4");
         if (error) return console.error(error);

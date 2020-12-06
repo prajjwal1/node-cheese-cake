@@ -1,11 +1,34 @@
 var express = require('express');
 var router = express.Router();
 var Cart = require('../models/cart')
+const path = require('path');
+const multer  = require('multer');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'public/images/');
+  },
+  filename: (req, file, cb) => {
+      console.log(file);
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+      cb(null, true);
+  } else {
+      cb(null, false);
+  }
+}
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
 
 var Product = require('../models/product')
-var Order = require('../models/order')
+var Order = require('../models/order');
+const { Console } = require('console');
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('shop/index', { title: 'Cheese Cake Shop' });
 });
@@ -24,10 +47,188 @@ router.get('/add-to-cart/:id', function (req,res,next) {
   });
 });
 
+router.get('/shop/admin-list', function (req, res, next){
+  var products = [];
+  var cnt = 0;
+  Product.find({}, function(err, items) {
+    items.forEach(function(item) {
+      if (item.title.length > 0 && item.isDeleted == false){
+        products[cnt] = item;
+        cnt ++;
+      }
+    })
+
+    console.log(products);
+    res.render('shop/admin-list', { products : products }) 
+  })
+
+})
+
+router.get('/shop/admin-delete', function (req, res, next){
+  var items_map = new Array();
+  var cnt = 0;
+  Product.find({}, function(err, items){
+    items.forEach(function(item){
+      if (item.title.length>0 && item.isDeleted == false){
+        items_map[cnt] = item;
+        cnt += 1;
+      }
+    })
+  })
+  res.render('shop/admin-delete', {
+    items: items_map
+  });
+})
+
+router.get('/shop/admin-add', function(req, res, next){
+  res.render('shop/admin-add');
+})
+
+router.get('/shop/admin-update', function(req, res, next){
+  var items_map = new Array();
+  var cnt = 0;
+  Product.find({}, function(err, items){
+    items.forEach(function(item) {
+      if (item.title.length > 0 && item.isDeleted == false) {
+        items_map[cnt] = item;
+        cnt += 1;
+      }
+    })
+  })
+  res.render('shop/admin-update', {
+    items: items_map
+  });
+})
+
+router.post('/cheese', upload.single('image'), function(req, res, next) {
+
+  var title = req.body.title;
+  var stock = req.body.stock;
+  var imagePath = '../images/'+ path.basename(req.file.path);
+  var description = req.body.description;
+  var category = req.body.category;
+  var price = req.body.price;
+  if(title == "") {
+    title = "Default Cheese";
+  }
+  if(stock == "") {
+    stock = 10;
+  }
+
+  if (!req.file || Object.keys(req.file).length === 0) {
+    imagePath = "../images/cheesenavbar.png";
+    // return res.status(400).send('No files were uploaded.');
+  }
+  else {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
+  }
+
+  if(description === "") {
+    description = "Type of Cheese";
+  }
+  if(category === "") {
+    category = "vegetarian";
+  }
+  if(price === "") {
+    price = 20;
+  }
+  data = [
+    {
+      title: title,
+      stock: stock,
+      imagePath: imagePath,
+      description: description,
+      category: category,
+      price: price,
+      isDeleted: false
+    }
+  ]
+  Product.insertMany(data, function(err, data){
+    if (err) throw err;
+    res.redirect('cheese');
+  })
+})
+
+router.post('/shop/item-delete/:id', function(req, res, next) {
+  Product.findOneAndUpdate(
+    {_id: req.params.id},
+    {isDeleted: true}, function (err, result) {
+        console.log("Successfully Deleted");
+    }
+  );
+  res.redirect('/cheese'); 
+})
+
+router.post('/shop/item-update/:id', function(req, res, next) {
+  Product.findOne({_id: req.params.id}, function(err, item) {
+    res.render('shop/update-product', item); 
+  });
+  
+})
+
+router.post('/shop/item-update-values/:id', upload.single('image'), function(req, res, next) {
+
+  var imagePath = "";
+  var query = {};
+
+  if (req.file && Object.keys(req.file).length != 0) {
+    imagePath = req.file.path;
+    temp = imagePath.split('/');
+    imagePath = '../'+'images'+'/'+temp[temp.length-1];
+    query = {
+      title: req.body.title,
+      category: req.body.category,
+      stock: req.body.stock,
+      price: req.body.price,
+      description: req.body.description,
+      imagePath: imagePath,
+    }
+  }
+
+  else {
+    query = {
+      title: req.body.title,
+      category: req.body.category,
+      stock: req.body.stock,
+      price: req.body.price,
+      description: req.body.description,
+    }
+  }
+
+  Product.findOneAndUpdate (
+    {_id: req.params.id},
+    query, function (err, result) {
+      console.log("Successfully Updated");
+    }  
+  );
+
+  res.redirect('/cheese'); 
+})
+
+router.get('/increase/:id', function(req, res, next) {
+  var productId = req.params.id;
+  Product.findOne({_id: productId}, function(err, item) {
+    var stock = item.stock;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    var updated = cart.increaseByOne(productId, stock);
+    console.log("stock: " + stock);
+    console.log("updated: " + updated);
+    if(updated == true) {
+      req.session.cart = cart;
+      res.redirect('/shopping-cart');
+    }
+    else {
+      res.redirect('/shopping-cart');
+    }
+  });
+
+});
+
 router.get('/reduce/:id', function(req, res, next) {
     var productId = req.params.id;
     var cart = new Cart(req.session.cart ? req.session.cart : {});
-
     cart.reduceByOne(productId);
     req.session.cart = cart;
     res.redirect('/shopping-cart');
@@ -112,15 +313,15 @@ router.post('/checkout', isLoggedIn, function (req,res,next) {
     Product.findOneAndUpdate(
         {_id: productId},
         {stock: stock}, function (err, result) {
-          console.log("Successfully updated");
+          console.log("Successfully updated quantity.");
         }
     );
-    order.save(function (err, result) {
-      req.flash('success', 'Successfully bought products!');
-      req.session.cart = null;
-      res.redirect('/cheese');
-    });
   }
+  order.save(function (err, result) {
+    req.flash('success', 'Successfully bought products!');
+    req.session.cart = null;
+    res.redirect('/cheese');
+  });
 });
 
 module.exports = router;

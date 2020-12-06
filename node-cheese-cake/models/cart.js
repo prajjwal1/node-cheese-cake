@@ -14,6 +14,19 @@ module.exports = function Cart(oldCart) {
         this.totalPrice += storedItem.item.price;
     };
 
+    this.increaseByOne = function (id, stock) {
+        if(stock >= this.items[id].qty + 1) {
+            this.items[id].qty++;
+            this.items[id].price += this.items[id].item.price;
+            this.totalQty++;
+            this.totalPrice += this.items[id].item.price;   
+            return true;
+        } 
+        else {
+            return false;
+        }
+    };
+
     this.reduceByOne = function (id) {
       this.items[id].qty--;
       this.items[id].price -= this.items[id].item.price;
