@@ -2,6 +2,6 @@
 
 
 Created by:
-- Prajjwal Bhargava
-- Paril Doshi
-- Gayatri Sapra
+- Prajjwal Bhargava (@prajjwal1)
+- Paril Doshi (@96sonu)
+- Gayatri Sapra (@gayatri-sapra)
