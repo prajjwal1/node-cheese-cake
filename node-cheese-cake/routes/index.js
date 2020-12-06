@@ -27,7 +27,8 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/wpl-project', {useNewUrlParser: true});
 
 var Product = require('../models/product')
-var Order = require('../models/order')
+var Order = require('../models/order');
+const { Console } = require('console');
 
 router.get('/', function(req, res, next) {
   res.render('shop/index', { title: 'Cheese Cake Shop' });
@@ -210,6 +211,25 @@ router.post('/shop/item-update-values/:id', upload.single('image'), function(req
 
   res.redirect('/cheese'); 
 })
+
+router.get('/increase/:id', function(req, res, next) {
+  var productId = req.params.id;
+  Product.findOne({_id: productId}, function(err, item) {
+    var stock = item.stock;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    var updated = cart.increaseByOne(productId, stock);
+    console.log("stock: " + stock);
+    console.log("updated: " + updated);
+    if(updated == true) {
+      req.session.cart = cart;
+      res.redirect('/shopping-cart');
+    }
+    else {
+      res.redirect('/shopping-cart');
+    }
+  });
+
+});
 
 router.get('/reduce/:id', function(req, res, next) {
     var productId = req.params.id;
