@@ -9,7 +9,22 @@ Core dependency:
 - jquery
 - jquery form validator
 
-- style.css controls the styling
-- `index.html` is a dummy file which points to `register.html`
-- `main.js` handles the core logic of form validation
-- `register.html` is the front end file
+Languages/Frameworks used for Implementation:
+• Node.js
+• Express.js
+• Handlebars
+• HTML
+• CSS
+• JavaScript
+• MongoDB
+
+Execute below given files first to populate database with basic data and admin user credentials.
+Execution:
+node seed/product-seeder.js
+node seed/initial-user-seeder.js
+nodemon
+
+Use below given Admin Creditials to login as admin and work on admin view
+Admin Credentials: (Use this login to test admin functionalities)
+Email: admin@admin.com
+Password: FirstAdmin1234*
