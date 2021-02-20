@@ -1,7 +1,5 @@
 # node-cheese-cake
 
-
-### Form validation
 Maintainer: @prajjwal1
 
 Core dependency: 
